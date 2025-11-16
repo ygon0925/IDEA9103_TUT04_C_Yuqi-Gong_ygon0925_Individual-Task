@@ -378,8 +378,40 @@ class Mondrian {
   }
 }
 
+
+class GlitchController {
+  // Trigger time
+  constructor() {
+    this.lastGlitchTime = 0;
+    this.interval = 600;
+  }
+
+
+  apply() {
+    let now = millis();
+    if (now - this.lastGlitchTime > this.interval) {
+      this.lastGlitchTime = now;
+      this.doGlitch();
+    }
+  }
+
+  // Lateral misalignment
+  doGlitch() {
+    let sliceCount = int(random(3, 8));
+
+    for (let i = 0; i < sliceCount; i++) {
+      let y = random(height);
+      let h = random(5, 40);
+      let offset = random(-40, 40);
+
+      copy(0, y, width, h, offset, y, width, h);
+    }
+  }
+}
+
 //main
 let mondrian;
+let glitch;
 
 function setup() {
   createCanvas(800, 800);
@@ -391,12 +423,16 @@ function setup() {
   setupTextures();
   
   mondrian = new Mondrian();
-  noLoop();
+
+  // create glitch instance
+  glitch = new GlitchController();
 }
 
 function draw() {
   background(BG);
   mondrian.draw();
+
+  glitch.apply();
 }
 
 // Adapt to the window size
