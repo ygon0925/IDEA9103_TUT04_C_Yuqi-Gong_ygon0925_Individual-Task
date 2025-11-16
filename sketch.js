@@ -409,9 +409,22 @@ class GlitchController {
   }
 }
 
+// Rotation
+class RotationController {
+  constructor() {
+    this.angle = 0;
+    this.speed = 0.005; // 每帧增加的弧度，值小一点保持缓慢旋转
+  }
+
+  update() {
+    this.angle += this.speed;
+  }
+}
+
 //main
 let mondrian;
 let glitch;
+let rotation;
 
 function setup() {
   createCanvas(800, 800);
@@ -426,11 +439,20 @@ function setup() {
 
   // create glitch instance
   glitch = new GlitchController();
+
+  rotation = new RotationController();
 }
 
 function draw() {
+  rotation.update();
+
   background(BG);
+  push();
+  translate(width / 2, height / 2);
+  rotate(rotation.angle);
+  translate(-width / 2, -height / 2);
   mondrian.draw();
+  pop()
 
   glitch.apply();
 }
