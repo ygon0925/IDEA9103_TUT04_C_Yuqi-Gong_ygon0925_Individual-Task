@@ -383,26 +383,31 @@ class GlitchController {
   // Trigger time
   constructor() {
     this.lastGlitchTime = 0;
-    this.interval = 600;
   }
 
 
-  apply() {
+  apply(rotationAngle) {
     let now = millis();
-    if (now - this.lastGlitchTime > this.interval) {
+    let intensity = (sin(rotationAngle * 4.0) + 1) / 2;
+    let interval = lerp(450, 60, intensity);
+
+    if (now - this.lastGlitchTime > interval) {
       this.lastGlitchTime = now;
-      this.doGlitch();
+      this.doGlitch(intensity);
     }
   }
 
   // Lateral misalignment
-  doGlitch() {
-    let sliceCount = int(random(3, 8));
+  doGlitch(intensity) {
+    let sliceCount = int(lerp(4, 24, intensity));
 
     for (let i = 0; i < sliceCount; i++) {
       let y = random(height);
-      let h = random(5, 40);
-      let offset = random(-40, 40);
+      let h = random(8, 60);
+      let offset = random(
+        -lerp(40, 150, intensity),
+         lerp(40, 150, intensity)
+      );
 
       copy(0, y, width, h, offset, y, width, h);
     }
@@ -413,7 +418,7 @@ class GlitchController {
 class RotationController {
   constructor() {
     this.angle = 0;
-    this.speed = 0.005; // 每帧增加的弧度，值小一点保持缓慢旋转
+    this.speed = 0.05;
   }
 
   update() {
@@ -454,7 +459,7 @@ function draw() {
   mondrian.draw();
   pop()
 
-  glitch.apply();
+  glitch.apply(rotation.angle);
 }
 
 // Adapt to the window size
