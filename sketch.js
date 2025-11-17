@@ -418,7 +418,7 @@ class GlitchController {
 class RotationController {
   constructor() {
     this.angle = 0;
-    this.speed = 0.05;
+    this.speed = 0.02;
   }
 
   update() {
